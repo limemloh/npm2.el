@@ -18,9 +18,9 @@ If you want to use use-package:
 
 # Features
 * Generate package.json. `npm2-init-package`
-..* DONE: Create package.json
-..* DONE: Suggest current directory as default name
-..* TODO: Check if a package.json already exist
+  * DONE: Create package.json
+  * DONE: Suggest current directory as default name
+  * TODO: Check if a package.json already exist
 * Package.json Major-mode.
 * TODO: wrapper for npm run *script-name*.
 * TODO: Install npm packages.
