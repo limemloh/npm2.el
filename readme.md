@@ -17,15 +17,15 @@ If you want to use use-package:
 
 
 # Features
-* Generate package.json. `npm2-init-package`
-  * DONE: Create package.json
-  * DONE: Suggest current directory as default name
-  * TODO: Check if a package.json already exist
-* Package.json Major-mode.
-* TODO: wrapper for npm run *script-name*.
-* TODO: Install npm packages.
-* TODO: Install from require("*package-name*").
-* TODO: Install npm2.el from melpa.
+- [ ] Generate package.json. `npm2-init-package`
+  - [x] Create package.json
+  - [x] Suggest current directory as default name
+  - [ ] Check if a package.json already exist
+- [ ] Package.json Major-mode.
+- [ ] wrapper for npm run *script-name*.
+- [ ] Install npm packages.
+- [ ] Install from require("*package-name*").
+- [ ] Install npm2.el from melpa.
 
 # License
 [GNU General Public License v3](./LICENSE)
