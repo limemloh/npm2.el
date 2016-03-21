@@ -17,10 +17,10 @@ If you want to use use-package:
 
 
 # Features
-- [ ] Generate package.json. `npm2-init-package`
+- Generate package.json. `npm2-init-package`
   - [x] Create package.json
   - [x] Suggest current directory as default name
-  - [ ] Check if a package.json already exist
+  - [x] Check if a package.json already exist
 - [ ] Package.json Major-mode.
 - [ ] wrapper for npm run *script-name*.
 - [ ] Install npm packages.

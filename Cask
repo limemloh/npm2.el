@@ -3,6 +3,10 @@
 
 (package-file "npm2.el")
 
+(files "*.el")
+
+(depends-on "f" "0.18.1")
+
 (development
  (depends-on "f")
  (depends-on "ecukes")
