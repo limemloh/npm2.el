@@ -14,38 +14,39 @@
 (require 'json)
 (require 'f)
 
-(defun npm2--find-project-root-directory-name ()
-  "Find the project root directory."
-  (file-name-nondirectory
-   (directory-file-name default-directory)))
-
-
-(defun npm2-init-package (name version description)
-  "Initialise project and create a package.json.
-NAME is a the project name.
+(defun npm2-init-package (name version author description main-file license)
+  "Creates a package.json.
+NAME is the project name.
 VERSION is the project version.
-DESCRIPTION is the project description."
+AUTHOR the name of the author.
+DESCRIPTION is the project description.
+MAIN-FILE the project mainfile.
+LICENSE the project license"
   (interactive
    (if (and
         (f-exists? "package.json")
         (not (y-or-n-p "package.json already exist. Overwrite?")))
-       (list nil nil nil)
-     (list
-      (let ((project-root-directory-name (npm2--find-project-root-directory-name)))
-        (read-string (concat "Enter project name (default " project-root-directory-name "): ") nil nil project-root-directory-name))
-      (read-string "Enter project version: " "0.0.1")
-      (read-string "Enter project description: "))))
-  (if (and name version description)
+       (list nil nil nil nil nil nil)
+     (let ((project-root-directory-name (file-name-nondirectory (directory-file-name default-directory)))
+           (author (format "%s <%s>" user-full-name user-mail-address)))
+       (list (read-string (concat "Enter project name (default " project-root-directory-name "): ") nil nil project-root-directory-name)
+             (read-string "Enter project version: " "0.0.1" nil "0.0.1")
+             (read-string (concat "Enter name of the author (default " author "): ") nil nil author t)
+             (read-string "Enter project description: ")
+             (read-string "Enter project main file (default index.js): " nil nil "index.js")
+             (read-string "Enter project license (default ISC): " nil nil "ISC")))))
+  (if (and name version description author description)
       (let ((json-encoding-pretty-print t))
         (with-temp-file "package.json"
           (insert (json-encode-list
                    (list (cons "name" name)
                          (cons "version" version)
+                         (cons "author" author)
                          (cons "description" description)
-                         '(main . "index.js")
+                         (cons "main" main-file)
                          '(scripts . ((test . "echo \"Error: no test specified\" && exit 1")))
-                         (cons "author" (format "%s <%s>" user-full-name user-mail-address))
-                         '(license . "ISC"))))))))
+                         (cons "license" license)))
+                  )))))
 
 
 
