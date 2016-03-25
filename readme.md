@@ -12,11 +12,8 @@ So far npm2 is only to be found here on GitHub.
 If you want to use use-package:
 ```elisp
 (use-package npm2
-  :load-path "~/path/to/dir/with/npm2"
-  :config
-  (add-hook 'js-mode 'npm2-mode))
+  :load-path "~/path/to/dir/with/npm2")
 ```
-
 
 # Features
 - [x] Generate package.json. `npm2-init-package`
