@@ -13,7 +13,29 @@
 
 (require 'json)
 (require 'f)
-(require 'compile)
+(require 'comint)
+
+
+(defvar npm2-executable-path "npm"
+  "Path to the program `npm'. Assumes that it is part of your global path.")
+
+(defvar npm2-cli-mode-map
+  (let ((map (nconc (make-sparse-keymap) comint-mode-map)))
+;; Keybindings here
+    map)
+  "map for npm2-mode all with the prefix C-c C-n")
+
+(defun npm2--run-npm-cmd (&rest cmd-list)
+  "Run a npm command"
+  (let ((buffer (comint-check-proc "npm")))
+    (pop-to-buffer
+     (if (or buffer (not (derived-mode-p 'npm-cli-mode))
+             (comint-check-proc (current-buffer)))
+         (get-buffer-create (or buffer "*npm*"))
+       (current-buffer)))
+    (apply 'make-comint-in-buffer "npm" buffer npm2-executable-path nil cmd-list)
+    (npm2-cli-mode)))
+
 
 (defun npm2-init-package (name version author description main-file license)
   "Creates a package.json.
@@ -49,26 +71,26 @@ LICENSE the project license"
                          (cons "license" license))))))))
 
 (defun npm2-run-script (script-name)
-  "A wrapper for npm run script."
+  "A wrapper for npm run script.
+The function tries to parse the package.json file to find script names."
   (interactive
    (let* ((package-file (json-read-file "package.json"))
           (scripts (if package-file
                        (mapcar (lambda (key) (car  key)) (cdr (assoc 'scripts package-file))))))
      (list (completing-read "npm run " scripts))))
-  (compile (concat "npm run " script-name) t))
+  (npm2--run-npm-cmd "run" script-name))
 
 (defun npm2-install-package (package-names)
   "Wrapper for npm install."
   (interactive "snpm install ")
-  (compile (concat "npm install " package-names) t ))
+  (npm2--run-npm-cmd "install" package-names))
 
-(defvar npm2-mode-map (make-sparse-keymap)
-  "npm2-mode keymap")
-
-(defun npm2-mode--compilation-buffer-name (&rest ignore) "*npm2*")
+(define-derived-mode npm2-cli-mode comint-mode "NPM"
+  "Major-mode for npm2-cli"
+  (add-hook 'comint-output-filter-functions 'npm2-mode--clean-up-ansi-mess t t))
 
 (defun npm2-mode--clean-up-ansi-mess (&rest ignore)
-  (with-current-buffer (npm2-mode--compilation-buffer-name)
+  (with-current-buffer "*npm*"
     (save-excursion
       (goto-char (point-min))
       (save-excursion
@@ -86,20 +108,7 @@ LICENSE the project license"
           (delete-char -4)))
       (save-excursion
         (while (search-forward "[0" nil t)
-          (delete-char -3)))
-
-      )))
-
-(define-minor-mode npm2-mode
-  "npm2-minor-mode --- Bringing npm inside Emacs." nil " npm" npm2-mode-map
-  (if npm2-mode
-      (progn
-        (set (make-local-variable 'compilation-buffer-name-function) 'npm2-mode--compilation-buffer-name)
-        (add-hook 'comint-output-filter-functions 'npm2-mode--clean-up-ansi-mess t)
-        )
-    (remove-hook 'comint-output-filter-functions 'npm2-mode--clean-up-ansi-mess)
-    ))
-
+          (delete-char -3))))))
 
 
 (provide 'npm2)
