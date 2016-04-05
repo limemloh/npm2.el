@@ -21,7 +21,7 @@
 
 (defvar npm2-cli-mode-map
   (let ((map (nconc (make-sparse-keymap) comint-mode-map)))
-;; Keybindings here
+    ;; Keybindings here
     map)
   "map for npm2-mode all with the prefix C-c C-n")
 
@@ -74,7 +74,8 @@ LICENSE the project license"
   "A wrapper for npm run script.
 The function tries to parse the package.json file to find script names."
   (interactive
-   (let* ((package-file (json-read-file "package.json"))
+   (let* ((package-location (locate-dominating-file buffer-file-name "package.json"))
+          (package-file (if package-location (json-read-file (f-join package-location "package.json"))))
           (scripts (if package-file
                        (mapcar (lambda (key) (car  key)) (cdr (assoc 'scripts package-file))))))
      (list (completing-read "npm run " scripts))))

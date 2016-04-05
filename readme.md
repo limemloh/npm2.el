@@ -21,6 +21,7 @@ If you want to use use-package:
   - [x] Check if a package.json already exist
 - [x] wrapper for npm run *script-name*. `npm2-run-script`
   - [x] Suggest scripts from package.json
+  - [x] Search parent directories for package.json
 - [x] Install npm packages. `npm2-install-package`
   - [ ] If in js-mode suggest packages from require("*package-name*").
 - [ ] Install npm2.el from melpa.
