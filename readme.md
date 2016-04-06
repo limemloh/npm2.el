@@ -23,7 +23,7 @@ If you want to use use-package:
   - [x] Suggest scripts from package.json
   - [x] Search parent directories for package.json
 - [x] Install npm packages. `npm2-install-package`
-  - [ ] If in js-mode suggest packages from require("*package-name*").
+  - [x] If in js-mode suggest packages from require("*package-name*").
 - [ ] Install npm2.el from melpa.
 - [ ] Package.json Major-mode.
 

@@ -1,5 +1,5 @@
 ;;; npm2.el --- Useful tools for npm (Node package manager)
-;;; Version: 0.0.1
+;;; Version: 0.2.3
 
 ;; Copyright (C) 2016 Emil Gjørup
 ;; Author: Emil Gjørup <limemloh@gmail.com>
@@ -35,7 +35,6 @@
        (current-buffer)))
     (apply 'make-comint-in-buffer "npm" buffer npm2-executable-path nil cmd-list)
     (npm2-cli-mode)))
-
 
 (defun npm2-init-package (name version author description main-file license)
   "Creates a package.json.
@@ -81,10 +80,20 @@ The function tries to parse the package.json file to find script names."
      (list (completing-read "npm run " scripts))))
   (npm2--run-npm-cmd "run" script-name))
 
-(defun npm2-install-package (package-names)
-  "Wrapper for npm install."
-  (interactive "snpm install ")
-  (npm2--run-npm-cmd "install" package-names))
+(defun npm2-install-package (package-name)
+  "Install a npm package.
+This is just a wrapper around the command 'npm install'."
+  (interactive
+   (save-excursion
+     (let ((empty-list ()))
+       (when (derived-mode-p 'js-mode)
+         (goto-char (point-min))
+         (while (search-forward-regexp "require *( *\"" nil t)
+           (let ((item (sexp-at-point)))
+             (if item
+                 (push item empty-list)))))
+       (list (completing-read "npm install " empty-list)))))
+  (npm2--run-npm-cmd "install" package-name))
 
 (define-derived-mode npm2-cli-mode comint-mode "NPM"
   "Major-mode for npm2-cli"
@@ -110,7 +119,6 @@ The function tries to parse the package.json file to find script names."
       (save-excursion
         (while (search-forward "[0" nil t)
           (delete-char -3))))))
-
 
 (provide 'npm2)
 ;;; npm2.el ends here
